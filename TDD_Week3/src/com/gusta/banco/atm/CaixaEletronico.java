@@ -1,6 +1,7 @@
 package com.gusta.banco.atm;
 
 import com.gusta.banco.contas.ContaCorrente;
+import com.gusta.banco.contas.FalhaAoRecuperarContaException;
 import com.gusta.banco.contas.IServicoRemoto;
 
 public class CaixaEletronico {
@@ -15,9 +16,14 @@ public class CaixaEletronico {
 	}
 	
 	public String logar() {
-		String numeroDaConta = this._hardware.pegarNumeroDaContaCartao();
-		this.setConta(this._servicoRemotoContas.recuperarConta(numeroDaConta));
-		return "Usuário Autenticado";
+		String numeroDaConta;
+		try {
+			numeroDaConta = this._hardware.pegarNumeroDaContaCartao();
+			this.setConta(this._servicoRemotoContas.recuperarConta(numeroDaConta));
+			return "Usuário Autenticado";
+		} catch (FalhaNaLeituraDoCartaoException | FalhaAoRecuperarContaException ex ) {
+			return "Não foi possível autenticar o usuário";
+		}
 	}
 
 	public ContaCorrente getConta() {
