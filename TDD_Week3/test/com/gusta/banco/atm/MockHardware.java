@@ -9,20 +9,20 @@ public class MockHardware implements IHardware {
 	public MockHardware() {	}
 
 	public void setNumeroDaConta(String numeroDaConta) {
-		this._numeroDaContaCartao = numeroDaConta;
+		_numeroDaContaCartao = numeroDaConta;
 	}
 	
 	public void setFalha(FalhasHW falha) {
-		this._erroForcado = falha;
+		_erroForcado = falha;
 	}
 
 	
 	@Override
 	public String pegarNumeroDaContaCartao() throws FalhaNaLeituraDoCartaoException {
-		if (this._erroForcado == FalhasHW.LEITURA_DO_CARTAO)
+		if (_erroForcado == FalhasHW.LEITURA_DO_CARTAO)
 			throw new FalhaNaLeituraDoCartaoException("Erro forçado pelo mock na leitura do cartão.");
 		
-		return this._numeroDaContaCartao;
+		return _numeroDaContaCartao;
 	}
 
 	@Override

@@ -8,7 +8,6 @@ class ContaCorrenteTest {
 	@BeforeEach
 	void setUp() {
 		conta = new ContaCorrente("Joao");
-		System.out.println("foi");
 	}
 	
 	@Test

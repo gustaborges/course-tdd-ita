@@ -26,7 +26,7 @@ public class MockServicoRemoto implements IServicoRemoto {
 	}
 
 	public void setFalha(FalhasSR falha) {
-		this._erroForcado = falha;		
+		_erroForcado = falha;		
 	}
 	
 	private FalhasSR getErroForcado() {
