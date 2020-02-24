@@ -6,7 +6,7 @@ public class MockHardware implements IHardware {
 	
 	private double _valorASerLidoDoEnvelope;
 	
-	public enum FalhasHW { LEITURA_DO_CARTAO, LEITOR_DE_ENVELOPE }
+	public enum FalhasHW { LEITURA_DO_CARTAO, LEITOR_DE_ENVELOPE, EMISSOR_DE_NOTAS }
 	private FalhasHW _erroForcado;
 	
 	
@@ -31,9 +31,9 @@ public class MockHardware implements IHardware {
 	}
 
 	@Override
-	public void entregarDinheiro() {
-		// TODO Auto-generated method stub
-
+	public void entregarDinheiro(double valor) throws FalhaNaEmissaoDasNotasException {
+		if (_erroForcado == FalhasHW.EMISSOR_DE_NOTAS)
+			throw new FalhaNaEmissaoDasNotasException("Erro forçado pelo mock no emissor de notas");
 	}
 
 	@Override

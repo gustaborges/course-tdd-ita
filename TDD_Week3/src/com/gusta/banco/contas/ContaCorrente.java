@@ -33,4 +33,20 @@ public class ContaCorrente {
 	public void deposita(double valorDeposito) {
 		_saldo += valorDeposito;		
 	}
+
+	public void saca(double valorSaque) throws SaqueMaiorQueSaldoException {
+		if (valorSaque <= 0)
+			throw new IllegalArgumentException("Valor de saque inválido");
+		if (valorSaque > getSaldo()) 
+			throw new SaqueMaiorQueSaldoException("Saldo insuficiente");
+		_saldo -= valorSaque;
+	}
+
+	public boolean temSaldoParaSaque(double valorSaque) {
+		if (getSaldo() >= valorSaque)
+			return true;
+		return false;
+	}
+	
+	
 }

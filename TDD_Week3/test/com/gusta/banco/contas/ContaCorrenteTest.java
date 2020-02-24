@@ -1,5 +1,7 @@
 package com.gusta.banco.contas;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +32,22 @@ class ContaCorrenteTest {
 			conta = new ContaCorrente(null);
 		}
 		catch (IllegalArgumentException e) {}
-	}	
+	}
+	
+	@Test
+	void whenSaldoEh100ESaco50EntaoSaldoEh50() throws SaqueMaiorQueSaldoException {
+		conta.deposita(100.00);
+		conta.saca(50.00);
+		assertTrue(conta.getSaldo() == 50.00);
+	}
+	
+	@Test
+	void whenSaqueMaiorQueSaldoEntaoSaqueMaiorQueSaldoExceptionEhLancado() {
+		try {
+			conta.saca(100.00);
+		}
+		catch (SaqueMaiorQueSaldoException ex) {}
+	}
+	
 	private ContaCorrente conta;
 }
