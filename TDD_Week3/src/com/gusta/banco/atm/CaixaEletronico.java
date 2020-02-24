@@ -11,15 +11,14 @@ public class CaixaEletronico {
 	private ContaCorrente _conta;
 	
 	public CaixaEletronico(IHardware hardware, IServicoRemoto servicoRemotoConta) {
-		this._hardware = hardware;
-		this._servicoRemotoContas = servicoRemotoConta;
+		_hardware = hardware;
+		_servicoRemotoContas = servicoRemotoConta;
 	}
 	
 	public String logar() {
-		String numeroDaConta;
 		try {
-			numeroDaConta = this._hardware.pegarNumeroDaContaCartao();
-			this.setConta(this._servicoRemotoContas.recuperarConta(numeroDaConta));
+			String numeroDaConta = _hardware.pegarNumeroDaContaCartao();
+			this.setConta(_servicoRemotoContas.recuperarConta(numeroDaConta));
 			return "Usuário Autenticado";
 		} catch (FalhaNaLeituraDoCartaoException | FalhaAoRecuperarContaException ex ) {
 			return "Não foi possível autenticar o usuário";
@@ -31,6 +30,6 @@ public class CaixaEletronico {
 	}
 
 	public void setConta(ContaCorrente conta) {
-		this._conta = conta;
+		_conta = conta;
 	}
 }
