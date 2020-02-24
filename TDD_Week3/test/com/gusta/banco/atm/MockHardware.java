@@ -3,8 +3,13 @@ package com.gusta.banco.atm;
 public class MockHardware implements IHardware {
 
 	private String _numeroDaContaCartao;
-	public enum FalhasHW { LEITURA_DO_CARTAO }
+	
+	private double _valorASerLidoDoEnvelope;
+	
+	public enum FalhasHW { LEITURA_DO_CARTAO, LEITOR_DE_ENVELOPE }
 	private FalhasHW _erroForcado;
+	
+	
 	
 	public MockHardware() {	}
 
@@ -32,9 +37,13 @@ public class MockHardware implements IHardware {
 	}
 
 	@Override
-	public void lerEnvelope() {
-		// TODO Auto-generated method stub
+	public double lerEnvelope() throws FalhaNoLeitorDeEnvelopeException {
+		if (_erroForcado == FalhasHW.LEITOR_DE_ENVELOPE) throw new FalhaNoLeitorDeEnvelopeException("Erro forçado pelo mock no leitor de envelope");
+		return _valorASerLidoDoEnvelope;
+	}
 
+	public void setValorASerLidoDoEnvelope(double valor) {
+		_valorASerLidoDoEnvelope = valor;
 	}
 
 
