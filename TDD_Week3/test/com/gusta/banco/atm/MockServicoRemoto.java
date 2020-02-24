@@ -2,35 +2,26 @@ package com.gusta.banco.atm;
 
 
 import com.gusta.banco.contas.ContaCorrente;
-import com.gusta.banco.contas.FalhaAoRecuperarContaException;
 import com.gusta.banco.contas.IServicoRemoto;
 
 public class MockServicoRemoto implements IServicoRemoto {
 
-	public enum FalhasSR { RECUPERACAO_DA_CONTA }
-	private FalhasSR _erroForcado;
+	private ContaCorrente _contaQueSeraRecuperada;
+	
+	public MockServicoRemoto() {
+		_contaQueSeraRecuperada = new ContaCorrente("Joao");
+	}
 	
 	@Override
-	public ContaCorrente recuperarConta(String numeroDaConta) throws FalhaAoRecuperarContaException {
-		if (getErroForcado() == FalhasSR.RECUPERACAO_DA_CONTA)
-			throw new FalhaAoRecuperarContaException("Erro forcado pelo mock ao recuperar conta.");
-		return new ContaCorrente("Joao");
+	public ContaCorrente recuperarConta(String numeroDaConta) {
+		return _contaQueSeraRecuperada;
 	}
 
 
 
 	@Override
-	public void persistirConta() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setFalha(FalhasSR falha) {
-		_erroForcado = falha;		
-	}
-	
-	private FalhasSR getErroForcado() {
-		return _erroForcado;
+	public void persistirConta(ContaCorrente conta) {
+		
 	}
 
 }

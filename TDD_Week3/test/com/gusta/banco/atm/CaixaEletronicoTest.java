@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.gusta.banco.atm.MockHardware.FalhasHW;
-import com.gusta.banco.atm.MockServicoRemoto.FalhasSR;
 
 class CaixaEletronicoTest {
 	
@@ -14,30 +13,53 @@ class CaixaEletronicoTest {
 	void setUp() {
 		mockHardware = new MockHardware();
 		mockServicoRemoto = new MockServicoRemoto();
+		caixaATM = new CaixaEletronico(mockHardware,mockServicoRemoto);
 	}
 	
 	@Test
 	void whenAutenticacaoBemSucedidaEntaoDevolveMensagemExito() {
-		mockHardware.setNumeroDaConta("10000");		
-		CaixaEletronico caixaATM = new CaixaEletronico(mockHardware, mockServicoRemoto);		
+		mockHardware.setNumeroDaConta("10000");			
 		assertEquals("Usuário Autenticado", caixaATM.logar());
 	}
 
 	@Test
 	void whenTentoAutenticarELeituraDoCartaoFalhaEntaoDevolveMensagemFalha() {	
-		mockHardware.setFalha(FalhasHW.LEITURA_DO_CARTAO);		
-		CaixaEletronico caixaATM = new CaixaEletronico(mockHardware, mockServicoRemoto);		
+		mockHardware.setFalha(FalhasHW.LEITURA_DO_CARTAO);
 		assertEquals("Não foi possível autenticar o usuário", caixaATM.logar());
+	}
+	
+
+	@Test
+	void whenNenhumDepositoEConsultoSaldoEntaoSaldoEhZero() {		
+		caixaATM.logar();
+		assertEquals("O saldo é R$ 0,00", caixaATM.saldo());
+	}
+	
+	
+	@Test
+	void whenDeposito100EntaoSaldoEh100() throws FalhaNoLeitorDeEnvelopeException {		
+		caixaATM.logar();
+		mockHardware.setValorASerLidoDoEnvelope(100.00);
+		assertEquals("Depósito recebido com sucesso", caixaATM.depositar());
+		assertEquals("O saldo é R$ 100,00", caixaATM.saldo());
 	}
 	
 	@Test
-	void whenTentoAutenticarETentativaRecuperarContaFalhaEntaoDevolveMensagemFalha() {		
-		mockHardware.setNumeroDaConta("1000");
-		mockServicoRemoto.setFalha(FalhasSR.RECUPERACAO_DA_CONTA);
-		CaixaEletronico caixaATM = new CaixaEletronico(mockHardware, mockServicoRemoto);		
-		assertEquals("Não foi possível autenticar o usuário", caixaATM.logar());
+	void whenDepositoELeitorDoEnvelopeFalhaEntaoDevolvoFalhaNoLeitorDeEnvelopeException() {		
+		caixaATM.logar();
+		mockHardware.setValorASerLidoDoEnvelope(1050.00);
+		mockHardware.setFalha(FalhasHW.LEITOR_DE_ENVELOPE);
+		
+		try {
+			caixaATM.depositar();
+		}
+		catch(FalhaNoLeitorDeEnvelopeException ex) { }
+		
+		assertEquals("O saldo é R$ 0,00", caixaATM.saldo());
 	}
+	
 	
 	private MockHardware mockHardware;
 	private MockServicoRemoto mockServicoRemoto;	
+	private CaixaEletronico caixaATM;
 }

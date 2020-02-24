@@ -5,6 +5,7 @@ public class ContaCorrente {
 	
 	private String _titular;
 	private String _numeroDaConta;
+	private double _saldo = 0.00;
 	
 	public ContaCorrente(String nomeTitular) {
 		setTitular(nomeTitular);
@@ -23,5 +24,13 @@ public class ContaCorrente {
 	private void geraNumeroDaConta() {
 		int numero = ++_lastNumeroDeConta;
 		_numeroDaConta = String.valueOf(numero);
+	}
+
+	public double getSaldo() {
+		return _saldo;
+	}
+
+	public void deposita(double valorDeposito) {
+		_saldo += valorDeposito;		
 	}
 }
