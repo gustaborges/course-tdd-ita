@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.gust.armazenamento.IArmazenamento;
+import com.gust.armazenamento.Armazenamento;
 import com.gust.user.*;
 
-public class MockArmazenamento implements IArmazenamento {
+public class MockArmazenamento extends Armazenamento {
 	
 	Map<String, User> userBD = new HashMap<String, User>();
 	

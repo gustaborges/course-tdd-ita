@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import com.gust.armazenamento.IArmazenamento;
+
+import com.gust.armazenamento.Armazenamento;
 import com.gust.user.UserNotFoundException;
 
 public class Placar {
 
-	private IArmazenamento armazenamento;
+	private Armazenamento armazenamento;
 
-	public Placar(IArmazenamento armazenamento) {
+	public Placar(Armazenamento armazenamento) {
 		setArmazenamento(armazenamento);
 	}
 
@@ -56,7 +57,7 @@ public class Placar {
 	}
 
 	// Getters e Setters
-	private void setArmazenamento(IArmazenamento armazenamento) {
+	private void setArmazenamento(Armazenamento armazenamento) {
 		this.armazenamento = armazenamento;
 	}
 
