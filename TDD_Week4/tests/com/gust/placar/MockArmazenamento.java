@@ -35,12 +35,12 @@ public class MockArmazenamento implements IArmazenamento {
 
 
 	@Override
-	public int getPontosPorTipo(String username, TipoPonto tipoPonto) throws UserNotFoundException {
+	public int getPontos(String username, TipoPonto tipoPonto) throws UserNotFoundException {
 		return getUser(username).getPontos(tipoPonto);
 	}
 
 	@Override
-	public List<TipoPonto> getTiposDePontoJaRegistrados(String username) throws UserNotFoundException {
+	public List<TipoPonto> getTiposDePontosJaRegistrados(String username) throws UserNotFoundException {
 		List<TipoPonto> listaTiposPonto = new ArrayList<TipoPonto>();
 		User user = getUser(username);	
 		boolean possuiPontoRegistrado;
@@ -55,9 +55,16 @@ public class MockArmazenamento implements IArmazenamento {
 
 	@Override
 	public List<String> getUsuariosPorTipoPonto(TipoPonto tipoPonto) {
-		// TODO
-		return null;
-
+		List<String> listaUsers = new ArrayList<String>();
+		for (String username : userBD.keySet()) {
+			try
+			{
+				if (getUser(username).getPontos(tipoPonto) > 0)
+					listaUsers.add(username);
+			}
+			catch (UserNotFoundException e) { }
+		}
+		return listaUsers;
 	}
 
 
