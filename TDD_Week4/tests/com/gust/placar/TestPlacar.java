@@ -7,6 +7,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.gust.armazenamento.FalhaArmazenamentoException;
+import com.gust.placar.MockArmazenamento.Falha;
 import com.gust.user.UserAlreadyExistsException;
 import com.gust.user.UserNotFoundException;
 
@@ -32,54 +34,48 @@ class TestPlacar {
 	 * Responsabilidade: RegistraPonto
 	 */
 	@Test
-	void registraPonto_WhenRegistraUmaMoeda_ThenUsuarioPossuiUmaMoeda() {
-		try {
-			placar.registraPonto(username1, TipoPonto.ESTRELA, 1);
+	void registraPonto_WhenRegistraUmaMoeda_ThenUsuarioPossuiUmaMoeda()
+			throws UserNotFoundException, FalhaArmazenamentoException {
+		placar.registraPonto(username1, TipoPonto.ESTRELA, 1);
 
-			var relatorio = placar.consultaPontos(username1);
-			assertEquals(1, relatorio.get(TipoPonto.ESTRELA));
-		} catch (Exception e) {
-			fail();
-		}
+		var relatorio = placar.consultaPontos(username1);
+		assertEquals(1, relatorio.get(TipoPonto.ESTRELA));
+
 	}
 
 	@Test
-	void registraPonto_WhenRegistraDuasMoedasNaMesmaChamada_ThenUsuarioPossuiDuasMoedas() {
-		try {
-			placar.registraPonto(username1, TipoPonto.MOEDA, 2);
+	void registraPonto_WhenRegistraDuasMoedasNaMesmaChamada_ThenUsuarioPossuiDuasMoedas()
+			throws UserNotFoundException, FalhaArmazenamentoException {
+		placar.registraPonto(username1, TipoPonto.MOEDA, 2);
 
-			var relatorio = placar.consultaPontos(username1);
-			assertEquals(2, relatorio.get(TipoPonto.MOEDA));
-		} catch (Exception e) {
-			fail();
-		}
+		var relatorio = placar.consultaPontos(username1);
+		assertEquals(2, relatorio.get(TipoPonto.MOEDA));
+
 	}
 
 	@Test
-	void registraPonto_WhenRegistraDuasMoedasEmChamadasSeparadas_ThenUsuarioPossuiDuasMoedas() {
-		try {
-			placar.registraPonto(username1, TipoPonto.MOEDA, 1);
-			placar.registraPonto(username1, TipoPonto.MOEDA, 1);
+	void registraPonto_WhenRegistraDuasMoedasEmChamadasSeparadas_ThenUsuarioPossuiDuasMoedas()
+			throws UserNotFoundException, FalhaArmazenamentoException {
 
-			var relatorio = placar.consultaPontos(username1);
-			assertEquals(2, relatorio.get(TipoPonto.MOEDA));
-		} catch (Exception e) {
-			fail();
-		}
+		placar.registraPonto(username1, TipoPonto.MOEDA, 1);
+		placar.registraPonto(username1, TipoPonto.MOEDA, 1);
+
+		var relatorio = placar.consultaPontos(username1);
+		assertEquals(2, relatorio.get(TipoPonto.MOEDA));
+
 	}
 
 	@Test
-	void registraPonto_WhenRegistraCincoMoedasTresEstrelas_ThenUsuarioPossuiCincoMoedasETresEstrelas() {
-		try {
-			placar.registraPonto(username1, TipoPonto.MOEDA, 5);
-			placar.registraPonto(username1, TipoPonto.ESTRELA, 4);
+	void registraPonto_WhenRegistraCincoMoedasTresEstrelas_ThenUsuarioPossuiCincoMoedasETresEstrelas()
+			throws UserNotFoundException, FalhaArmazenamentoException {
 
-			var relatorio = placar.consultaPontos(username1);
-			assertEquals(5, relatorio.get(TipoPonto.MOEDA));
-			assertEquals(4, relatorio.get(TipoPonto.ESTRELA));
-		} catch (Exception e) {
-			fail();
-		}
+		placar.registraPonto(username1, TipoPonto.MOEDA, 5);
+		placar.registraPonto(username1, TipoPonto.ESTRELA, 4);
+
+		var relatorio = placar.consultaPontos(username1);
+		assertEquals(5, relatorio.get(TipoPonto.MOEDA));
+		assertEquals(4, relatorio.get(TipoPonto.ESTRELA));
+
 	}
 
 	@Test
@@ -112,24 +108,22 @@ class TestPlacar {
 	 * Responsabilidade: ConsultaPontos
 	 */
 	@Test
-	void consultaPontos_WhenUsuarioNaoTemPontosDeUmTipo_ThenResultadoNaoIncluiOTipo() {
-		try {
-			Map<TipoPonto, Integer> pontosRegistrados = placar.consultaPontos(username1);
-			assertEquals(null, pontosRegistrados.get(TipoPonto.CURTIDA));
-		} catch (Exception e) {
-			fail();
-		}
+	void consultaPontos_WhenUsuarioNaoTemPontosDeUmTipo_ThenResultadoNaoIncluiOTipo()
+			throws UserNotFoundException, FalhaArmazenamentoException {
+
+		Map<TipoPonto, Integer> pontosRegistrados = placar.consultaPontos(username1);
+		assertEquals(null, pontosRegistrados.get(TipoPonto.CURTIDA));
+
 	}
 
 	@Test
-	void consultaPontos_WhenUsuarioTemPontosDeUmTipo_ThenResultadoIncluiOTipo() {
-		try {
-			placar.registraPonto(username1, TipoPonto.CURTIDA, 1);
-			Map<TipoPonto, Integer> pontosRegistrados = placar.consultaPontos(username1);
-			assertEquals(1, pontosRegistrados.get(TipoPonto.CURTIDA));
-		} catch (Exception e) {
-			fail();
-		}
+	void consultaPontos_WhenUsuarioTemPontosDeUmTipo_ThenResultadoIncluiOTipo()
+			throws UserNotFoundException, FalhaArmazenamentoException {
+
+		placar.registraPonto(username1, TipoPonto.CURTIDA, 1);
+		Map<TipoPonto, Integer> pontosRegistrados = placar.consultaPontos(username1);
+		assertEquals(1, pontosRegistrados.get(TipoPonto.CURTIDA));
+
 	}
 
 	@Test
@@ -141,71 +135,72 @@ class TestPlacar {
 	 * Responsabilidade: ConsultaRankingTipoPonto
 	 */
 	@Test
-	void consultaRankingTipoPonto_WhenApenasUmUserPossuiTipoPonto_ThenRankingContemApenasEle() {
-		try {
-			placar.registraPonto(username1, TipoPonto.ESTRELA, 10);
-			placar.registraPonto(username2, TipoPonto.CURTIDA, 2);
+	void consultaRankingTipoPonto_WhenApenasUmUserPossuiTipoPonto_ThenRankingContemApenasEle()
+			throws UserNotFoundException, FalhaArmazenamentoException {
 
-			ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
+		placar.registraPonto(username1, TipoPonto.ESTRELA, 10);
+		placar.registraPonto(username2, TipoPonto.CURTIDA, 2);
 
-			assertEquals(1, ranking.size());
-			assertTrue(ranking.get(0).getUsername() == username1);
-		} catch (Exception e) {
-			fail();
-		}
+		ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
+
+		assertEquals(1, ranking.size());
+		assertTrue(ranking.get(0).getUsername() == username1);
+
 	}
 
 	@Test
-	void consultaRankingTipoPonto_WhenDoisUsersPossuemMesmaQuantidadePonto_ThenRankingContemUsersEmOrdemDecrescente() {
-		try {
-			placar.registraPonto(username1, TipoPonto.ESTRELA, 1);
-			placar.registraPonto(username2, TipoPonto.ESTRELA, 1);
+	void consultaRankingTipoPonto_WhenDoisUsersPossuemMesmaQuantidadePonto_ThenRankingContemUsersEmOrdemDecrescente()
+			throws UserNotFoundException, FalhaArmazenamentoException {
 
-			ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
+		placar.registraPonto(username1, TipoPonto.ESTRELA, 1);
+		placar.registraPonto(username2, TipoPonto.ESTRELA, 1);
 
-			assertEquals(2, ranking.size());
-			assertTrue(isDecrescente(ranking));
-		} catch (Exception e) {
-			fail();
-		}
+		ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
+
+		assertEquals(2, ranking.size());
+		assertTrue(isDecrescente(ranking));
+
 	}
 
 	@Test
-	void consultaRankingTipoPonto_WhenDoisUsersPossuemPontoDoTipo_ThenRankingContemUsersEmOrdemDecrescente() {
-		try {
-			placar.registraPonto(username1, TipoPonto.ESTRELA, 10);
-			placar.registraPonto(username2, TipoPonto.ESTRELA, 2);
+	void consultaRankingTipoPonto_WhenDoisUsersPossuemPontoDoTipo_ThenRankingContemUsersEmOrdemDecrescente()
+			throws UserNotFoundException, FalhaArmazenamentoException {
 
-			ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
+		placar.registraPonto(username1, TipoPonto.ESTRELA, 10);
+		placar.registraPonto(username2, TipoPonto.ESTRELA, 2);
 
-			assertEquals(2, ranking.size());
-			assertTrue(isDecrescente(ranking));
-		} catch (Exception e) {
-			fail();
-		}
+		ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
+
+		assertEquals(2, ranking.size());
+		assertTrue(isDecrescente(ranking));
+
 	}
 
 	@Test
-	void consultaRankingTipoPonto_WhenVariosUsersPossuemPontoDoTipo_ThenRankingContemUsersEmOrdemDecrescente() {
-		try {
-			placar.registraPonto(username1, TipoPonto.ESTRELA, 20);
-			placar.registraPonto(username2, TipoPonto.ESTRELA, 10);
-			placar.registraPonto(username3, TipoPonto.ESTRELA, 50);
-			placar.registraPonto(username4, TipoPonto.ESTRELA, 60);
-			placar.registraPonto(username5, TipoPonto.ESTRELA, 20);
+	void consultaRankingTipoPonto_WhenVariosUsersPossuemPontoDoTipo_ThenRankingContemUsersEmOrdemDecrescente()
+			throws UserNotFoundException, FalhaArmazenamentoException {
+		placar.registraPonto(username1, TipoPonto.ESTRELA, 20);
+		placar.registraPonto(username2, TipoPonto.ESTRELA, 10);
+		placar.registraPonto(username3, TipoPonto.ESTRELA, 50);
+		placar.registraPonto(username4, TipoPonto.ESTRELA, 60);
+		placar.registraPonto(username5, TipoPonto.ESTRELA, 20);
 
-			ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
+		ArrayList<ItemRanking> ranking = placar.consultaRanking(TipoPonto.ESTRELA);
 
-			assertEquals(5, ranking.size());
-			assertTrue(isDecrescente(ranking));
-		} catch (Exception e) {
-			fail();
-		}
+		assertEquals(5, ranking.size());
+		assertTrue(isDecrescente(ranking));
+
 	}
 
 	@Test
 	void consultaRankingTipoPonto_WhenTipoDePontoNulo_ThenShouldThrowIllegalArgumentException() {
 		assertThrows(IllegalArgumentException.class, () -> placar.consultaRanking(null));
+	}
+
+	@Test
+	void consultaRankingTipoPonto_WhenDependenciaLancaException_ThenShouldThrowFalhaArmazenamentoException() {
+		mockArmazenamento.setFalha(Falha.FALHA_ARMAZENAMENTO);
+		assertThrows(FalhaArmazenamentoException.class, () -> placar.consultaRanking(TipoPonto.MOEDA));
 	}
 
 	private boolean isDecrescente(ArrayList<ItemRanking> ranking) {

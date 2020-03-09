@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.gust.armazenamento.Armazenamento;
+import com.gust.armazenamento.FalhaArmazenamentoException;
 import com.gust.user.UserNotFoundException;
 
 public class Placar {
@@ -16,7 +17,8 @@ public class Placar {
 		setArmazenamento(armazenamento);
 	}
 
-	public void registraPonto(String username, TipoPonto tipoPonto, int quantidade) throws UserNotFoundException {
+	public void registraPonto(String username, TipoPonto tipoPonto, int quantidade)
+			throws UserNotFoundException, FalhaArmazenamentoException {
 		if (username == null)
 			throw new IllegalArgumentException("Usuário inválido.");
 		if (tipoPonto == null)
@@ -27,7 +29,8 @@ public class Placar {
 		armazenamento.addPontos(username, tipoPonto, quantidade);
 	}
 
-	public Map<TipoPonto, Integer> consultaPontos(String username) throws UserNotFoundException {
+	public Map<TipoPonto, Integer> consultaPontos(String username)
+			throws UserNotFoundException, FalhaArmazenamentoException {
 		if (username == null)
 			throw new IllegalArgumentException("Usuário inválido.");
 
@@ -40,22 +43,23 @@ public class Placar {
 		return relacaoDePontos;
 	}
 
-	public ArrayList<ItemRanking> consultaRanking(TipoPonto tipo) {
+	public ArrayList<ItemRanking> consultaRanking(TipoPonto tipo) throws FalhaArmazenamentoException {
 		if (tipo == null)
 			throw new IllegalArgumentException("Argumento nulo.");
-		
-		var ranking = new ArrayList<ItemRanking>();
 
-		for (String user : armazenamento.getUsuariosPorTipoPonto(tipo)) {
-			try {
-				int pontos = armazenamento.getPontos(user, tipo);
-				ranking.add(new ItemRanking(user, pontos));
-			} catch (UserNotFoundException e) { }
-		}
-		ranking.sort(Comparator.naturalOrder());
-		return ranking;
+			var ranking = new ArrayList<ItemRanking>();
+
+			for (String user : armazenamento.getUsuariosPorTipoPonto(tipo)) {
+				try {
+					int pontos = armazenamento.getPontos(user, tipo);
+					ranking.add(new ItemRanking(user, pontos));
+				}
+				catch(UserNotFoundException e) {}
+			}
+			ranking.sort(Comparator.naturalOrder());
+			return ranking;
 	}
-
+	
 	// Getters e Setters
 	private void setArmazenamento(Armazenamento armazenamento) {
 		this.armazenamento = armazenamento;
