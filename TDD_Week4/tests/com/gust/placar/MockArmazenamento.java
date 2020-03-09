@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.gust.armazenamento.Armazenamento;
+import com.gust.armazenamento.FalhaArmazenamentoException;
 import com.gust.user.*;
 
 public class MockArmazenamento extends Armazenamento {
 	
-	Map<String, User> userBD = new HashMap<String, User>();
+	private Map<String, User> userBD = new HashMap<String, User>();
+	private Falha falhaForcada = null;
 	
 	private User getUser(String username) throws UserNotFoundException {
 		if (userBD.containsKey(username))
@@ -27,22 +29,35 @@ public class MockArmazenamento extends Armazenamento {
 		userBD.put(username, new User(username));
 	}	
 	
+	public void setFalha(Falha falha) {
+		this.falhaForcada = falha;
+	}
+	
+	private void lancaFalhaSeSetado(Falha falha) throws FalhaArmazenamentoException {
+		if (falha == null) return;
+		switch(falha) {
+			case FALHA_ARMAZENAMENTO : throw new FalhaArmazenamentoException("Falha forçada");
+		}
+	}
 	
 	@Override
-	public void addPontos(String username, TipoPonto tipoPonto, int pontos) throws UserNotFoundException {
-		getUser(username).addPontos(tipoPonto, pontos);
+	public void addPontos(String username, TipoPonto tipoPonto, int pontos) throws UserNotFoundException, FalhaArmazenamentoException {
+		lancaFalhaSeSetado(falhaForcada);
+		this.getUser(username).addPontos(tipoPonto, pontos);
 	}
 
 
 	@Override
-	public int getPontos(String username, TipoPonto tipoPonto) throws UserNotFoundException {
-		return getUser(username).getPontos(tipoPonto);
+	public int getPontos(String username, TipoPonto tipoPonto) throws UserNotFoundException, FalhaArmazenamentoException {
+		lancaFalhaSeSetado(falhaForcada);
+		return this.getUser(username).getPontos(tipoPonto);
 	}
 
 	@Override
-	public List<TipoPonto> getTiposDePontosJaRegistrados(String username) throws UserNotFoundException {
+	public List<TipoPonto> getTiposDePontosJaRegistrados(String username) throws UserNotFoundException, FalhaArmazenamentoException {
+		lancaFalhaSeSetado(falhaForcada);
 		List<TipoPonto> listaTiposPonto = new ArrayList<TipoPonto>();
-		User user = getUser(username);	
+		User user = this.getUser(username);	
 		boolean possuiPontoRegistrado;
 		
 		for (TipoPonto tipoPonto : TipoPonto.values()) {
@@ -54,7 +69,8 @@ public class MockArmazenamento extends Armazenamento {
 	}
 
 	@Override
-	public List<String> getUsuariosPorTipoPonto(TipoPonto tipoPonto) {
+	public List<String> getUsuariosPorTipoPonto(TipoPonto tipoPonto) throws FalhaArmazenamentoException {
+		lancaFalhaSeSetado(falhaForcada);
 		List<String> listaUsers = new ArrayList<String>();
 		for (String username : userBD.keySet()) {
 			try
@@ -67,6 +83,8 @@ public class MockArmazenamento extends Armazenamento {
 		return listaUsers;
 	}
 
-
+	public enum Falha {
+		FALHA_ARMAZENAMENTO;
+	}
 
 }
