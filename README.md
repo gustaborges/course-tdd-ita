@@ -1,6 +1,6 @@
 # TDD Course - My solutions
 
-This repository contains my project solutions for a test-driven development course I recently accomplished. Each week folder represents completely independent projects.
+This repository contains my own solutions of projects developed during a TDD (test-driven development) course I recently accomplished. Each week folder represents completely independent projects.
 
 In each of them, you can find both the classes and their unit tests.
 
