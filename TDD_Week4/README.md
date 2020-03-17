@@ -7,3 +7,5 @@ I chose to store their pontuations in a XML file which kind of works like a data
 I made use of specialized classes in Java that perform read and write operations in XML files.
 
 All functionalities were developed using test-driven development approach.
+
+There have been developed both unit and integration tests, with use of mock objects.
